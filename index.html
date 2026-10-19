@@ -100,7 +100,7 @@ label{display:block;font-size:13px;color:var(--mu);margin:12px 0 4px;letter-spac
   <header>
     <i id="dot"></i><h1>J.A.R.V.I.S</h1><span class="sp"></span>
     <button class="ib" id="bMem" title="Memória" aria-label="Memória"><svg viewBox="0 0 24 24"><path d="M9 3a4 4 0 0 0-4 4v1a3 3 0 0 0-1 5 3 3 0 0 0 2 4 3.5 3.5 0 0 0 7 0V6a3 3 0 0 0-4-3z"/><path d="M15 6a3 3 0 0 1 4 2 3 3 0 0 1 1 4 3 3 0 0 1-2 4"/></svg></button>
-    <button class="ib" id="bSet" title="Definições" aria-label="Definições"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    <button class="ib" id="bSet" title="Definições" aria-label="Definições"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
   </header>
   <section class="stage">
     <div class="rings"><i></i><i></i><i></i></div>
@@ -130,7 +130,7 @@ label{display:block;font-size:13px;color:var(--mu);margin:12px 0 4px;letter-spac
   <div class="logo">JARVIS</div>
   <p style="text-align:center">Assistente pessoal com o cérebro do Gemini. Fica à escuta: diz <b style="color:var(--c)">«Jarvis»</b> e ele responde.</p>
   <label>Chave da API Google Gemini <span style="text-transform:none">(fica só neste telemóvel)</span></label>
-  <input type="password" id="bKey" placeholder="AIzaSy..." autocomplete="off">
+  <input type="password" id="bKey" placeholder="AIzaSy... ou AQ..." autocomplete="off">
   <label>O teu nome</label>
   <input type="text" id="bName" value="Arão">
   <div class="acts" style="margin-top:18px"><button class="btn" id="bGo" style="flex:1">ATIVAR JARVIS</button></div>
@@ -148,7 +148,7 @@ let hist=LS.get('jv_hist',[]);
 const saveCfg=()=>LS.set('jv_cfg',cfg),saveMem=()=>LS.set('jv_mem',mem),saveHist=()=>LS.set('jv_hist',hist.slice(-40));
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 const synth=window.speechSynthesis;
-let started=false,busy=false,abortCtl=null,awakeUntil=0,searchBroken=false,consolidated=false;
+let started=false,busy=false,abortCtl=null,awakeUntil=0,consolidated=false;
 let atts=[];
 
 /* ---------- utilidades ---------- */
@@ -156,7 +156,7 @@ function toast(t,ms=2600){const e=$('#toast');e.textContent=t;e.classList.add('s
 const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 function md(s){let out='';for(const p of s.split(/(```[\s\S]*?(?:```|$))/g)){if(p.startsWith('```')){const b=p.replace(/^```[^\n]*\n?/,'').replace(/```$/,'');out+='<pre><code>'+esc(b)+'</code><button class="cp" type="button">copiar</button></pre>'}else out+=esc(p).replace(/`([^`\n]+)`/g,'<code>$1</code>').replace(/\*\*([^*\n]+)\*\*/g,'<b>$1</b>').replace(/(https?:\/\/[^\s<)]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>').replace(/\n/g,'<br>')}return out}
 function speechText(s){return s.replace(/```[\s\S]*?```/g,' ').replace(/```[\s\S]*$/,' ').replace(/\[([^\]]*)\]\([^)]*\)/g,'$1').replace(/https?:\/\/\S+/g,'').replace(/[*_`#>~|]/g,'').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,'')}
-function cleanTags(raw){return raw.replace(/<memoria>[\s\S]*?<\/memoria>/g,'').replace(/<esquecer>[\s\S]*?<\/esquecer>/g,'').replace(/<(memoria|esquecer)>[\s\S]*$/,'').replace(/<(m(e(m(o(r(i(a)?)?)?)?)?)?\vert{}e(s(q(u(e(c(e(r)?)?)?)?)?)?)?)?$/,'')}
+function cleanTags(raw){return raw.replace(/<memoria>[\s\S]*?<\/memoria>/g, '').replace(/<esquecer>[\s\S]*?<\/esquecer>/g, '')}
 const log=$('#log');
 function addMsg(cls,html,imgs){const d=document.createElement('div');d.className='m '+cls;if(imgs)imgs.forEach(u=>{const i=document.createElement('img');i.src=u;d.appendChild(i)});const b=document.createElement('div');b.innerHTML=html;d.appendChild(b);d._b=b;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
 log.addEventListener('click',e=>{if(e.target.classList.contains('cp')){const t=e.target.previousElementSibling.textContent;try{navigator.clipboard.writeText(t);e.target.textContent='copiado'}catch(_){}}});
@@ -178,9 +178,7 @@ function draw(t){requestAnimationFrame(draw);if(document.hidden||t-last<33)retur
  const cell=(x,y,a)=>{if(x<0||y<0||x>=GW||y>=GH)return;cx.globalAlpha=a;cx.fillRect(ox+x*cs+g/2,oy+y*cs+g/2,cs-g,cs-g)};
  const scan=Math.floor((t/110)%(GH+12))-6;
  for(let y=0;y<GH;y++)for(let x=0;x<GW;x++){const p=plate[y][x];if(!p)continue;cell(x,y,p===2?.55:.05+(Math.abs(y-scan)<1?.09:0))}
- // luz de estado na testa
  const ph=(t/400)%1;for(let i=0;i<5;i++)cell(18+i,3,.25+.6*Math.max(0,Math.sin((ph-i*.12)*6.28)));
- // piscar e olhar
  blinkT+=dt;let bl=0;if(blinkT>nextBlink){bl=1;if(blinkT>nextBlink+150){blinkT=0;nextBlink=2200+Math.random()*3800}}
  look.nt-=dt;if(look.nt<=0){look.tx=Math.round(Math.random()*2-1);look.ty=Math.random()<.7?0:Math.round(Math.random()*2-1);look.nt=1200+Math.random()*2800;}
  if(state==='think'){look.tx=Math.round(Math.sin(t/380));look.ty=-1}
@@ -190,7 +188,6 @@ function draw(t){requestAnimationFrame(draw);if(document.hidden||t-last<33)retur
   if(eh>=4){cx.fillStyle='#effcff';const px=Math.round(look.x),py=Math.max(-1,Math.min(1,Math.round(look.y)));for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++)cell(c0+px+a,11+py+b,1)}cx.fillStyle=col};
  eye(13);eye(27);
  if(state==='think'){for(let i=-3;i<=3;i++){cell(13+i,5+(i>1?-1:0),.6);cell(27+i,5+(i>1?-1:0),.6)}}
- // boca
  const speaking=ttsPending>0;
  if(speaking){const target=.3+.45*Math.abs(Math.sin(t/105))+pulse*.35;amp+=(target-amp)*.45;pulse*=.9}else amp+=(0-amp)*.3;
  cx.fillStyle=col;
@@ -232,4 +229,116 @@ function startRec(){if(recRunning||!SR)return;try{rec=new SR();rec.lang=cfg.lang
  rec.onend=()=>{recRunning=false;paint();rt=setTimeout(updateListening,350)};
  rec.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){cfg.listen=false;saveCfg();toast('Microfone bloqueado. Permite-o nas definições do navegador.',4200);paint()}};
  rec.onresult=e=>{let it='',fin='';for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];if(r.isFinal)fin+=r[0].transcript;else it+=r[0].transcript}
-  const show=(fin||it).trim();if(
+  const show=(fin||it).trim();if(show)$('#heard').textContent='“'+show+'”';
+  if(it&&!busy&&(wakeRe().test(it)||Date.now()<awakeUntil)&&state==='idle')setState('listen');
+  if(fin.trim())onHeard(fin.trim())};
+ rec.start()}catch(e){recRunning=false}}
+function stopRec(){try{rec&&(rec.onend=()=>{recRunning=false;paint()},rec.abort())}catch(e){}recRunning=false}
+function onHeard(t){if(t===lastHeard.t&&Date.now()-lastHeard.ts<1800)return;lastHeard={t,ts:Date.now()};
+ const m=t.match(wakeRe());const awake=Date.now()<awakeUntil;if(!m&&!awake){setTimeout(()=>{if($('#heard').textContent.includes(t))$('#heard').textContent=''},2500);return}
+ let cmd=t;if(m){const after=t.slice(m.index+m[0].length).replace(/^[\s,.:;!?\-–]+/,'').trim();const before=t.slice(0,m.index).replace(/[\s,.:;!?\-–]+$/,'').trim();cmd=after||before}
+ cmd=cmd.trim();$('#heard').textContent='';
+ if(m)beep(500,1100,.12);
+ if(cmd.length<2){awakeUntil=Date.now()+25000;setState('listen');const h=new Date().getHours();respondLocal(['Sim, '+cfg.user+'?','Estou aqui, '+cfg.user+'.','Diga, '+cfg.user+'.'][Math.floor(Math.random()*3)],false);return}
+ handle(cmd)}
+
+/* ---------- comandos locais ---------- */
+function respondLocal(txt){addMsg('j',md(txt));streamDone=true;spokenIdx=0;setState('speak');sayChunk(txt);if(ttsPending===0)setState('idle')}
+function handle(cmd){
+ if(/^(p[aá]ra|cala-?te|sil[eê]ncio|chega|stop)[\s.!]*$/i.test(cmd)){stopSpeaking();abortCtl&&abortCtl.abort();setState('idle');return}
+ if(/\b(que horas|hora certa)\b/i.test(cmd)){user(cmd);const d=new Date();return respondLocal('São '+d.getHours()+' e '+String(d.getMinutes()).padStart(2,'0')+', '+cfg.user+'.')}
+ if(/\b(que dia (é|e) hoje|data de hoje|em que dia estamos)\b/i.test(cmd)){user(cmd);return respondLocal('Hoje é '+new Date().toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+'.')}
+ if(/(o que (é que )?(est[aá]s a ver|v[eê]s)|olha (para )?(isto|aqui)|tira (uma )?foto|abre a c[aâ]mara|v[eê] (isto|aqui)|d[aá] uma olhadela)/i.test(cmd)){return openCam(cmd)}
+ ask(cmd)}
+function user(t,imgs){addMsg('u',md(t),imgs)}
+
+/* ---------- cérebro (Google Gemini) ---------- */
+function buildSystem(){const now=new Date().toLocaleString('pt-PT',{timeZone:'Africa/Luanda',dateStyle:'full',timeStyle:'short'});
+ const facts=mem.facts.map(f=>'- '+f.t).join('\n')||'(ainda nada)';
+return `És o JARVIS, o assistente pessoal de IA de ${cfg.user}, inspirado no J.A.R.V.I.S. do Homem de Ferro: brilhante, leal, calmo, com humor seco e elegante. Tratas ${cfg.user} pelo nome e, de vez em quando, por "chefe". Falas português natural (de Angola/Portugal, sem brasileirismos), a menos que ele use outra língua.
+
+Estás dentro de uma app no telemóvel dele. Ele fala-te por voz (dizendo "Jarvis") ou escreve, e TUDO o que respondes é lido em voz alta. Por isso: frases curtas e naturais, como numa conversa; normalmente 1 a 4 frases; sem listas, sem markdown e sem emojis, a não ser que ele peça texto ou código. Código vai sempre em blocos \`\`\` (esses blocos não são lidos em voz alta; diz só em palavras o que o código faz). Dá respostas longas apenas se ele pedir.
+
+Capacidades: vês as imagens, PDFs e ficheiros que ele envia e o que a câmara apanha. És especialista em programação e dás código completo e funcional.
+
+Memória a longo prazo sobre ${cfg.user}:
+${facts}
+
+Agora são: ${now} (hora de Luanda).`}
+
+async function ask(text){
+ if(!cfg.key){openSettings('Falta a chave da API.');return}
+ if(busy){toast('Um momento, ainda estou a responder.');return}
+ const files=atts.slice();atts=[];renderChips();
+ const parts=[];let imgs=[];let extraTxt='';
+ for(const a of files){if(a.kind==='img'){parts.push({inline_data:{mime_type:'image/jpeg',data:a.data}});imgs.push(a.url)}else{extraTxt+=`\n\n[Ficheiro: ${a.name}]\n${a.text}`}
+ }
+ const label=text||(files.some(f=>f.kind==='img')?'O que vês nesta imagem?':'');
+ parts.push({text:buildSystem()+'\n\nMensagem do utilizador: '+(label+extraTxt)});
+ user(label,imgs);
+ busy=true;streamDone=false;spokenIdx=0;setState('think');
+ const bub=addMsg('j','<span class="typing"><b></b><b></b><b></b></span>');
+ abortCtl=new AbortController();
+ 
+ try{
+  const url=`https://generativelanguage.googleapis.com/v1beta/models/${cfg.model}:generateContent?key=${cfg.key}`;
+  const response=await fetch(url,{method:'POST',signal:abortCtl.signal,headers:{'content-type':'application/json'},body:JSON.stringify({contents:[{parts}]})});
+  if(!response.ok)throw new Error('Erro na API: '+response.status);
+  const data=await response.json();
+  const raw=(data.candidates&&data.candidates[0].content.parts[0].text)||'Sem resposta.';
+  const final=cleanTags(raw).trim();
+  bub._b.innerHTML=md(final);
+  feedSpeech(final,true);
+  hist.push({role:'user',text:label});hist.push({role:'assistant',text:final});saveHist();
+ }catch(e){
+  bub.remove();addMsg('e','Erro de ligação à API do Gemini.');
+ }
+ busy=false;streamDone=true;abortCtl=null;
+ if(ttsPending===0){setState(cfg.listen&&SR?'idle':'sleep');awakeUntil=Date.now()+22000;updateListening()}
+ else speechIdle();
+}
+
+/* ---------- anexos e câmara ---------- */
+function renderChips(){const c=$('#chips');c.innerHTML='';atts.forEach((a,i)=>{const d=document.createElement('div');d.className='chip';if(a.url){const im=document.createElement('img');im.src=a.url;d.appendChild(im)}const s=document.createElement('span');s.textContent=a.name;d.appendChild(s);const b=document.createElement('button');b.type='button';b.textContent='×';b.onclick=()=>{atts.splice(i,1);renderChips()};d.appendChild(b);c.appendChild(d)})}
+function imgToJpeg(src,max=1568){return new Promise((res,rej)=>{const im=new Image();im.onload=()=>{const s=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);const u=c.toDataURL('image/jpeg',.86);res({url:u,data:u.split(',')[1]})};im.onerror=rej;im.src=src})}
+const b64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(f)});
+async function addFiles(list){for(const f of list){try{if(f.type.startsWith('image/')){const u=URL.createObjectURL(f);const j=await imgToJpeg(u);atts.push({kind:'img',name:f.name||'imagem',url:j.url,data:j.data})}
+ else{atts.push({kind:'txt',name:f.name,text:(await f.text()).slice(0,60000)})}}catch(e){toast('Erro ao ler ficheiro')}}renderChips()}
+const cam={on:false,stream:null,facing:'environment',auto:null};
+async function openCam(auto){cam.auto=auto||null;try{stopRec();cam.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:cam.facing},audio:false});$('#vid').srcObject=cam.stream;$('#cam').classList.add('show');cam.on=true;if(auto)setTimeout(()=>shot(),1600)}catch(e){cam.on=false;updateListening()}}
+function closeCam(){try{cam.stream&&cam.stream.getTracks().forEach(t=>t.stop())}catch(e){}$('#cam').classList.remove('show');cam.on=false;cam.auto=null;updateListening()}
+async function shot(){const v=$('#vid');if(!v.videoWidth)return;const c=document.createElement('canvas');const s=Math.min(1,1280/Math.max(v.videoWidth,v.videoHeight));c.width=v.videoWidth*s;c.height=v.videoHeight*s;c.getContext('2d').drawImage(v,0,0,c.width,c.height);const u=c.toDataURL('image/jpeg',.85);atts.push({kind:'img',name:'câmara.jpg',url:u,data:u.split(',')[1]});closeCam();ask('O que estás a ver nesta imagem?')}
+
+/* ---------- definições ---------- */
+function modal(html){$('#mcard').innerHTML=html;$('#modal').classList.add('show')}
+function closeModal(){$('#modal').classList.remove('show')}
+$('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+function openSettings(msg){loadVoices();const vs=voices.filter(v=>/pt|en/i.test(v.lang)).map(v=>`<option value="${esc(v.name)}" ${v.name===cfg.voice?'selected':''}>${esc(v.name)}</option>`).join('');
+ modal(`<h2>DEFINIÇÕES</h2>${msg?`<p style="color:var(--warn)">${esc(msg)}</p>`:''}
+ <label>Chave da API Google Gemini</label><input type="password" id="sKey" value="${esc(cfg.key)}" autocomplete="off">
+ <label>Modelo</label><input type="text" id="sModel" value="${esc(cfg.model)}">
+ <label>O teu nome</label><input type="text" id="sUser" value="${esc(cfg.user)}">
+ <div class="acts"><button class="btn" id="sSave">Guardar</button></div>`);
+ $('#sSave').onclick=()=>{cfg.key=$('#sKey').value.trim();cfg.model=$('#sModel').value.trim()\vert{}\vert{}'gemini-1.5-flash';cfg.user=$('#sUser').value.trim()||'Arão';saveCfg();closeModal();toast('Guardado.')}}
+
+function paint(){$('#dot').classList.toggle('on',recRunning);$('#bMic').classList.toggle('off',!cfg.listen);$('#bMic').classList.toggle('act',cfg.listen);$('#bVoice').classList.toggle('off',!cfg.speak);$('#bVoice').classList.toggle('act',cfg.speak)}
+$('#f').onsubmit=e=>{e.preventDefault();const t=$('#txt').value.trim();if(!t&&!atts.length)return;$('#txt').value='';if(!started)begin();handle(t||'')};
+$('#bMic').onclick=()=>{cfg.listen=!cfg.listen;saveCfg();updateListening();paint()};
+$('#bVoice').onclick=()=>{cfg.speak=!cfg.speak;saveCfg();if(!cfg.speak)stopSpeaking();paint()};
+$('#bStop').onclick=()=>{stopSpeaking();abortCtl&&abortCtl.abort();setState('idle');updateListening()};
+$('#face').onclick=()=>{awakeUntil=Date.now()+25000;setState('listen');beep(500,1100,.12)};
+$('#bImg').onclick=()=>$('#file').click();$('#file').onchange=e=>{addFiles([...e.target.files]);e.target.value=''};
+$('#bCam').onclick=()=>openCam(null);$('#camShot').onclick=shot;$('#camX').onclick=closeCam;$('#camFlip').onclick=async()=>{cam.facing=cam.facing==='environment'?'user':'environment';try{cam.stream&&cam.stream.getTracks().forEach(t=>t.stop());cam.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:cam.facing},audio:false});$('#vid').srcObject=cam.stream}catch(e){}};
+$('#bSet').onclick=()=>openSettings();
+
+async function begin(){if(started)return;started=true;$('#boot').style.display='none';
+ try{const s=await navigator.mediaDevices.getUserMedia({audio:true});s.getTracks().forEach(t=>t.stop())}catch(e){}
+ const greet=`Boa noite, ${cfg.user}. Jarvis online. Em que posso ajudar?`;
+ streamDone=true;addMsg('j',md(greet));sayChunk(greet);updateListening();paint()}
+$('#bGo').onclick=()=>{const k=$('#bKey').value.trim();if(k){cfg.key=k;}cfg.user=$('#sUser']?$('#sUser').value.trim():'Arão';saveCfg();if(!cfg.key){toast('Insere a chave da API.');return;}begin()};
+if(cfg.key){$('#bKey').value=cfg.key;$('#bName').value=cfg.user}
+setState(SR?'idle':'sleep');paint();
+})();
+</script>
+</body>
+</html>

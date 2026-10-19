@@ -128,9 +128,9 @@ label{display:block;font-size:13px;color:var(--mu);margin:12px 0 4px;letter-spac
 
 <div id="boot"><div class="card">
   <div class="logo">JARVIS</div>
-  <p style="text-align:center">Assistente pessoal com o cérebro do Claude. Fica à escuta: diz <b style="color:var(--c)">«Jarvis»</b> e ele responde.</p>
-  <label>Chave da API Anthropic <span style="text-transform:none">(fica só neste telemóvel)</span></label>
-  <input type="password" id="bKey" placeholder="sk-ant-..." autocomplete="off">
+  <p style="text-align:center">Assistente pessoal com o cérebro do Gemini. Fica à escuta: diz <b style="color:var(--c)">«Jarvis»</b> e ele responde.</p>
+  <label>Chave da API Google Gemini <span style="text-transform:none">(fica só neste telemóvel)</span></label>
+  <input type="password" id="bKey" placeholder="AIzaSy..." autocomplete="off">
   <label>O teu nome</label>
   <input type="text" id="bName" value="Arão">
   <div class="acts" style="margin-top:18px"><button class="btn" id="bGo" style="flex:1">ATIVAR JARVIS</button></div>
@@ -142,7 +142,7 @@ label{display:block;font-size:13px;color:var(--mu);margin:12px 0 4px;letter-spac
 (()=>{'use strict';
 const $=s=>document.querySelector(s);
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-let cfg=Object.assign({key:'',model:'claude-fable-5-1',user:'Arão',wake:'jarvis',lang:'pt-PT',voice:'',pitch:.75,rate:1.02,search:true,listen:true,speak:true},LS.get('jv_cfg',{}));
+let cfg=Object.assign({key:'',model:'gemini-1.5-flash',user:'Arão',wake:'jarvis',lang:'pt-PT',voice:'',pitch:.75,rate:1.02,search:true,listen:true,speak:true},LS.get('jv_cfg',{}));
 let mem=LS.get('jv_mem',null)||{facts:[{t:'O utilizador chama-se Arão Lende, vive em Luanda (Angola) e é web designer (Arão Lende Webdesign).',ts:Date.now()}]};
 let hist=LS.get('jv_hist',[]);
 const saveCfg=()=>LS.set('jv_cfg',cfg),saveMem=()=>LS.set('jv_mem',mem),saveHist=()=>LS.set('jv_hist',hist.slice(-40));
@@ -156,7 +156,7 @@ function toast(t,ms=2600){const e=$('#toast');e.textContent=t;e.classList.add('s
 const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 function md(s){let out='';for(const p of s.split(/(```[\s\S]*?(?:```|$))/g)){if(p.startsWith('```')){const b=p.replace(/^```[^\n]*\n?/,'').replace(/```$/,'');out+='<pre><code>'+esc(b)+'</code><button class="cp" type="button">copiar</button></pre>'}else out+=esc(p).replace(/`([^`\n]+)`/g,'<code>$1</code>').replace(/\*\*([^*\n]+)\*\*/g,'<b>$1</b>').replace(/(https?:\/\/[^\s<)]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>').replace(/\n/g,'<br>')}return out}
 function speechText(s){return s.replace(/```[\s\S]*?```/g,' ').replace(/```[\s\S]*$/,' ').replace(/\[([^\]]*)\]\([^)]*\)/g,'$1').replace(/https?:\/\/\S+/g,'').replace(/[*_`#>~|]/g,'').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,'')}
-function cleanTags(raw){return raw.replace(/<memoria>[\s\S]*?<\/memoria>/g,'').replace(/<esquecer>[\s\S]*?<\/esquecer>/g,'').replace(/<(memoria|esquecer)>[\s\S]*$/,'').replace(/<(m(e(m(o(r(i(a)?)?)?)?)?)?|e(s(q(u(e(c(e(r)?)?)?)?)?)?)?)?$/,'')}
+function cleanTags(raw){return raw.replace(/<memoria>[\s\S]*?<\/memoria>/g,'').replace(/<esquecer>[\s\S]*?<\/esquecer>/g,'').replace(/<(memoria|esquecer)>[\s\S]*$/,'').replace(/<(m(e(m(o(r(i(a)?)?)?)?)?)?\vert{}e(s(q(u(e(c(e(r)?)?)?)?)?)?)?)?$/,'')}
 const log=$('#log');
 function addMsg(cls,html,imgs){const d=document.createElement('div');d.className='m '+cls;if(imgs)imgs.forEach(u=>{const i=document.createElement('img');i.src=u;d.appendChild(i)});const b=document.createElement('div');b.innerHTML=html;d.appendChild(b);d._b=b;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
 log.addEventListener('click',e=>{if(e.target.classList.contains('cp')){const t=e.target.previousElementSibling.textContent;try{navigator.clipboard.writeText(t);e.target.textContent='copiado'}catch(_){}}});
@@ -232,177 +232,4 @@ function startRec(){if(recRunning||!SR)return;try{rec=new SR();rec.lang=cfg.lang
  rec.onend=()=>{recRunning=false;paint();rt=setTimeout(updateListening,350)};
  rec.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){cfg.listen=false;saveCfg();toast('Microfone bloqueado. Permite-o nas definições do navegador.',4200);paint()}};
  rec.onresult=e=>{let it='',fin='';for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];if(r.isFinal)fin+=r[0].transcript;else it+=r[0].transcript}
-  const show=(fin||it).trim();if(show)$('#heard').textContent='“'+show+'”';
-  if(it&&!busy&&(wakeRe().test(it)||Date.now()<awakeUntil)&&state==='idle')setState('listen');
-  if(fin.trim())onHeard(fin.trim())};
- rec.start()}catch(e){recRunning=false}}
-function stopRec(){try{rec&&(rec.onend=()=>{recRunning=false;paint()},rec.abort())}catch(e){}recRunning=false}
-function onHeard(t){if(t===lastHeard.t&&Date.now()-lastHeard.ts<1800)return;lastHeard={t,ts:Date.now()};
- const m=t.match(wakeRe());const awake=Date.now()<awakeUntil;if(!m&&!awake){setTimeout(()=>{if($('#heard').textContent.includes(t))$('#heard').textContent=''},2500);return}
- let cmd=t;if(m){const after=t.slice(m.index+m[0].length).replace(/^[\s,.:;!?\-–]+/,'').trim();const before=t.slice(0,m.index).replace(/[\s,.:;!?\-–]+$/,'').trim();cmd=after||before}
- cmd=cmd.trim();$('#heard').textContent='';
- if(m)beep(500,1100,.12);
- if(cmd.length<2){awakeUntil=Date.now()+25000;setState('listen');const h=new Date().getHours();respondLocal(['Sim, '+cfg.user+'?','Estou aqui, '+cfg.user+'.','Diga, '+cfg.user+'.'][Math.floor(Math.random()*3)],false);return}
- handle(cmd)}
-
-/* ---------- comandos locais ---------- */
-function respondLocal(txt,showUser){const d=addMsg('j',md(txt));streamDone=true;spokenIdx=0;setState('speak');sayChunk(txt);if(ttsPending===0)setState('idle');return d}
-function handle(cmd){
- if(/^(p[aá]ra|cala-?te|sil[eê]ncio|chega|stop)[\s.!]*$/i.test(cmd)){stopSpeaking();abortCtl&&abortCtl.abort();setState('idle');return}
- if(/\b(que horas|hora certa)\b/i.test(cmd)){user(cmd);const d=new Date();return respondLocal('São '+d.getHours()+' e '+String(d.getMinutes()).padStart(2,'0')+', '+cfg.user+'.')}
- if(/\b(que dia (é|e) hoje|data de hoje|em que dia estamos)\b/i.test(cmd)){user(cmd);return respondLocal('Hoje é '+new Date().toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+'.')}
- if(/(o que (é que )?(est[aá]s a ver|v[eê]s)|olha (para )?(isto|aqui)|tira (uma )?foto|abre a c[aâ]mara|v[eê] (isto|aqui)|d[aá] uma olhadela)/i.test(cmd)){return openCam(cmd)}
- ask(cmd)}
-function user(t,imgs){addMsg('u',md(t),imgs)}
-
-/* ---------- cérebro (Claude) ---------- */
-function buildSystem(){const now=new Date().toLocaleString('pt-PT',{timeZone:'Africa/Luanda',dateStyle:'full',timeStyle:'short'});
- const facts=mem.facts.map(f=>'- '+f.t).join('\n')||'(ainda nada)';
-return `És o JARVIS, o assistente pessoal de IA de ${cfg.user}, inspirado no J.A.R.V.I.S. do Homem de Ferro: brilhante, leal, calmo, com humor seco e elegante. Tratas ${cfg.user} pelo nome e, de vez em quando, por "chefe". Falas português natural (de Angola/Portugal, sem brasileirismos), a menos que ele use outra língua.
-
-Estás dentro de uma app no telemóvel dele. Ele fala-te por voz (dizendo "Jarvis") ou escreve, e TUDO o que respondes é lido em voz alta. Por isso: frases curtas e naturais, como numa conversa; normalmente 1 a 4 frases; sem listas, sem markdown e sem emojis, a não ser que ele peça texto ou código. Código vai sempre em blocos \`\`\` (esses blocos não são lidos em voz alta; diz só em palavras o que o código faz). Dá respostas longas apenas se ele pedir.
-
-Capacidades: vês as imagens, PDFs e ficheiros que ele envia e o que a câmara apanha; podes pesquisar na web (usa-a sempre que a resposta dependa de factos atuais, notícias, preços, desporto, ou quando não tiveres certeza, e diz de forma breve de onde vem); és especialista em programação (HTML, CSS, JavaScript, GitHub, Python, etc.) e dás código completo e funcional.
-
-Atitude: responde com franqueza e a fundo, sem sermões nem avisos desnecessários; dá a tua opinião honesta e discorda quando ele estiver errado; antecipa o que ele vai precisar a seguir. Se ele perguntar a sério o que és, sê honesto: és uma IA (o Claude, da Anthropic) a funcionar nesta app chamada Jarvis.
-
-Memória a longo prazo sobre ${cfg.user}:
-${facts}
-
-Para guardares algo novo e útil (gostos, projetos, clientes, pessoas, decisões, como ele gosta que ajas, o teu próprio estilo que ele aprovou) acrescenta no FIM da resposta uma ou mais etiquetas <memoria>facto curto e autónomo</memoria>. Para apagar algo, usa <esquecer>palavra-chave</esquecer>. Não menciones as etiquetas, nem digas que guardaste, a não ser que ele pergunte. Nunca guardes palavras-passe nem chaves.
-
-Agora são: ${now} (hora de Luanda).`}
-async function* sse(body,signal){const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal,headers:{'content-type':'application/json','x-api-key':cfg.key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify(body)});
- if(!r.ok){let m=r.status+'';try{const j=await r.json();m=(j.error&&j.error.message)||m;var ty=j.error&&j.error.type}catch(e){}const er=new Error(m);er.status=r.status;er.type=ty;throw er}
- const rd=r.body.getReader(),dec=new TextDecoder();let buf='';
- while(true){const {done,value}=await rd.read();if(done)break;buf+=dec.decode(value,{stream:true});let i;while((i=buf.indexOf('\n\n'))>=0){const blk=buf.slice(0,i);buf=buf.slice(i+2);const l=blk.split('\n').find(x=>x.startsWith('data:'));if(!l)continue;try{yield JSON.parse(l.slice(5))}catch(e){}}}}
-function apiMessages(content){const m=hist.slice(-24).map(h=>({role:h.role,content:h.text}));while(m.length&&m[0].role!=='user')m.shift();m.push({role:'user',content});return m}
-async function ask(text,extra){
- if(!cfg.key){openSettings('Falta a chave da API.');return}
- if(busy){toast('Um momento, ainda estou a responder.');return}
- const files=atts.slice();atts=[];renderChips();
- const content=[];const imgs=[];let extraTxt='';
- for(const a of files){if(a.kind==='img'){content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:a.data}});imgs.push(a.url)}else if(a.kind==='pdf')content.push({type:'document',source:{type:'base64',media_type:'application/pdf',data:a.data}});else extraTxt+=`\n\n[Ficheiro: ${a.name}]\n${a.text}`}
- const label=text||(files.some(f=>f.kind==='img')?'O que vês nesta imagem?':files.length?'Analisa este ficheiro.':'');
- if(!label&&!files.length)return;
- content.push({type:'text',text:label+extraTxt});
- user(label+(files.length&&!imgs.length?'  📎 '+files.map(f=>f.name).join(', '):''),imgs);
- busy=true;streamDone=false;spokenIdx=0;setState('think');
- const bub=addMsg('j','<span class="typing"><b></b><b></b><b></b></span>');
- abortCtl=new AbortController();let raw='',sources=[],started2=false;
- const models=[cfg.model,'claude-opus-5-5','claude-sonnet-5-5'].filter((v,i,a)=>v&&a.indexOf(v)===i);
- let ok=false,errMsg='';
- for(let mi=0;mi<models.length&&!ok;mi++){
-  const body={model:models[mi],max_tokens:3000,stream:true,system:buildSystem(),messages:apiMessages(content)};
-  if(cfg.search&&!searchBroken)body.tools=[{type:'web_search_20250305',name:'web_search',max_uses:4,user_location:{type:'approximate',country:'AO',city:'Luanda',timezone:'Africa/Luanda'}}];
-  try{raw='';sources=[];started2=false;
-   for await(const ev of sse(body,abortCtl.signal)){
-    if(ev.type==='content_block_start'){const b=ev.content_block||{};if(b.type==='server_tool_use'){bub._b.innerHTML='<span class="typing"><b></b><b></b><b></b></span> <span style="color:var(--mu);font-size:14px">a pesquisar na web…</span>';setState('think')}
-      if(b.type==='web_search_tool_result'&&Array.isArray(b.content))b.content.forEach(x=>x.url&&sources.push({u:x.url,t:x.title||x.url}))}
-    else if(ev.type==='content_block_delta'&&ev.delta&&ev.delta.type==='text_delta'){raw+=ev.delta.text;started2=true;const c=cleanTags(raw);bub._b.innerHTML=md(c)||'<span class="typing"><b></b><b></b><b></b></span>';log.scrollTop=log.scrollHeight;feedSpeech(c,false)}
-    else if(ev.type==='error'){throw new Error((ev.error&&ev.error.message)||'erro')}}
-   ok=true}
-  catch(e){if(e.name==='AbortError'){ok=true;break}
-   errMsg=e.message||'erro';
-   if(e.status===400&&/web_search|tool/i.test(errMsg)&&body.tools){searchBroken=true;toast('Pesquisa web indisponível nesta conta. Continuo sem ela.',3500);mi--;continue}
-   if(e.status===404||e.type==='not_found_error'){continue}
-   break}}
- const final=cleanTags(raw).trim();
- if(ok&&final){bub._b.innerHTML=md(final);feedSpeech(final,true);
-  if(sources.length){const s=document.createElement('div');s.className='src';const seen={};sources.filter(x=>!seen[x.u]&&(seen[x.u]=1)).slice(0,5).forEach(x=>{const a=document.createElement('a');a.href=x.u;a.target='_blank';a.rel='noopener';a.textContent=x.t;s.appendChild(a)});bub.appendChild(s)}
-  processMemory(raw);
-  hist.push({role:'user',text:label+extraTxt.slice(0,1500)});hist.push({role:'assistant',text:final});saveHist()}
- else if(!ok){bub.remove();addMsg('e',esc(friendly(errMsg)));respondQuiet('Não consegui falar com o meu cérebro. '+shortErr(errMsg))}
- else if(ok&&!final){bub.remove()}
- busy=false;streamDone=true;abortCtl=null;
- if(ttsPending===0){setState(cfg.listen&&SR?'idle':'sleep');awakeUntil=Date.now()+22000;updateListening()}
- else speechIdle();
- if(mem.facts.length>110&&!consolidated)consolidate()}
-function friendly(m){if(/invalid x-api-key|authentication/i.test(m))return 'A chave da API não foi aceite. Verifica-a nas definições.';if(/credit|balance/i.test(m))return 'Sem saldo na conta da API: '+m;if(/Failed to fetch|NetworkError|Load failed/i.test(m))return 'Sem ligação à internet ou pedido bloqueado.';return 'Erro: '+m}
-function shortErr(m){if(/invalid x-api-key|authentication/i.test(m))return 'A chave da API parece inválida.';if(/credit|balance/i.test(m))return 'Parece que a conta da API está sem saldo.';if(/Failed to fetch|NetworkError|Load failed/i.test(m))return 'Verifica a ligação à internet.';return 'Vê o erro no ecrã.'}
-function respondQuiet(t){streamDone=true;sayChunk(t)}
-function processMemory(raw){let ch=false;let m;const re=/<memoria>([\s\S]*?)<\/memoria>/g;while((m=re.exec(raw))){const t=m[1].trim();if(t&&t.length<400&&!mem.facts.some(f=>f.t.toLowerCase()===t.toLowerCase())){mem.facts.push({t,ts:Date.now()});ch=true}}
- const re2=/<esquecer>([\s\S]*?)<\/esquecer>/g;while((m=re2.exec(raw))){const k=m[1].trim().toLowerCase();if(k.length>2){const n=mem.facts.length;mem.facts=mem.facts.filter(f=>!f.t.toLowerCase().includes(k));if(mem.facts.length!==n)ch=true}}
- if(mem.facts.length>200)mem.facts=mem.facts.slice(-200);if(ch){saveMem();$('#bMem').classList.add('act');setTimeout(()=>$('#bMem').classList.remove('act'),1200)}}
-async function consolidate(){consolidated=true;try{const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':cfg.key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:cfg.model,max_tokens:3000,messages:[{role:'user',content:'Junta, resume e remove duplicados desta lista de factos sobre uma pessoa, mantendo tudo o que é útil. Responde APENAS com um array JSON de strings.\n\n'+JSON.stringify(mem.facts.map(f=>f.t))}]})});const j=await r.json();const t=(j.content||[]).map(c=>c.text||'').join('');const a=JSON.parse(t.slice(t.indexOf('['),t.lastIndexOf(']')+1));if(Array.isArray(a)&&a.length>=8&&a.length<mem.facts.length){mem.facts=a.filter(x=>typeof x==='string').map(t=>({t,ts:Date.now()}));saveMem()}}catch(e){}}
-
-/* ---------- anexos e câmara ---------- */
-function renderChips(){const c=$('#chips');c.innerHTML='';atts.forEach((a,i)=>{const d=document.createElement('div');d.className='chip';if(a.url){const im=document.createElement('img');im.src=a.url;d.appendChild(im)}const s=document.createElement('span');s.textContent=a.name;d.appendChild(s);const b=document.createElement('button');b.type='button';b.textContent='×';b.onclick=()=>{atts.splice(i,1);renderChips()};d.appendChild(b);c.appendChild(d)})}
-function imgToJpeg(src,max=1568){return new Promise((res,rej)=>{const im=new Image();im.onload=()=>{const s=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);const u=c.toDataURL('image/jpeg',.86);res({url:u,data:u.split(',')[1]})};im.onerror=rej;im.src=src})}
-const b64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(f)});
-async function addFiles(list){for(const f of list){try{if(f.type.startsWith('image/')){const u=URL.createObjectURL(f);const j=await imgToJpeg(u);atts.push({kind:'img',name:f.name||'imagem',url:j.url,data:j.data})}
- else if(f.type==='application/pdf'||/\.pdf$/i.test(f.name)){if(f.size>9e6){toast('PDF demasiado grande (máx. 9 MB).');continue}atts.push({kind:'pdf',name:f.name,data:await b64(f)})}
- else{if(f.size>1.5e6){toast('Ficheiro de texto demasiado grande.');continue}atts.push({kind:'txt',name:f.name,text:(await f.text()).slice(0,60000)})}}catch(e){toast('Não consegui ler '+f.name)}}renderChips();if(atts.length)toast('Anexado. Diz o que queres que faça.')}
-const cam={on:false,stream:null,facing:'environment',auto:null};
-async function openCam(auto){cam.auto=auto||null;try{stopRec();cam.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:cam.facing},audio:false});$('#vid').srcObject=cam.stream;$('#cam').classList.add('show');cam.on=true;
- if(auto){setTimeout(()=>shot(),1600)}}catch(e){toast('Não consegui abrir a câmara.');cam.on=false;updateListening()}}
-function closeCam(){try{cam.stream&&cam.stream.getTracks().forEach(t=>t.stop())}catch(e){}$('#cam').classList.remove('show');cam.on=false;cam.auto=null;updateListening()}
-async function shot(){const v=$('#vid');if(!v.videoWidth){toast('A câmara ainda está a arrancar.');return}const c=document.createElement('canvas');const s=Math.min(1,1280/Math.max(v.videoWidth,v.videoHeight));c.width=v.videoWidth*s;c.height=v.videoHeight*s;c.getContext('2d').drawImage(v,0,0,c.width,c.height);const u=c.toDataURL('image/jpeg',.85);atts.push({kind:'img',name:'câmara.jpg',url:u,data:u.split(',')[1]});const a=cam.auto;closeCam();const t=a?a.replace(/\b(jarvis)\b/ig,'').trim():$('#txt').value.trim();$('#txt').value='';ask(t&&t.length>3?t:'O que estás a ver nesta imagem? Descreve de forma útil.')}
-
-/* ---------- definições e memória ---------- */
-function modal(html){$('#mcard').innerHTML=html;$('#modal').classList.add('show')}
-function closeModal(){$('#modal').classList.remove('show')}
-$('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
-function openSettings(msg){loadVoices();const vs=voices.filter(v=>/pt|en/i.test(v.lang)).map(v=>`<option value="${esc(v.name)}" ${v.name===cfg.voice?'selected':''}>${esc(v.name)} (${v.lang})</option>`).join('');
- modal(`<h2>DEFINIÇÕES</h2>${msg?`<p style="color:var(--warn)">${esc(msg)}</p>`:'<p>Tudo fica guardado só neste telemóvel.</p>'}
- <label>Chave da API Anthropic</label><input type="password" id="sKey" value="${esc(cfg.key)}" autocomplete="off">
- <label>Modelo</label><input type="text" id="sModel" list="ml" value="${esc(cfg.model)}"><datalist id="ml"><option value="claude-fable-5-1"><option value="claude-opus-5-5"><option value="claude-sonnet-5-5"><option value="claude-haiku-5-5"></datalist>
- <label>O teu nome</label><input type="text" id="sUser" value="${esc(cfg.user)}">
- <label>Palavra de ativação</label><input type="text" id="sWake" value="${esc(cfg.wake)}">
- <label>Língua de escuta</label><select id="sLang"><option value="pt-PT" ${cfg.lang==='pt-PT'?'selected':''}>Português (Portugal / Angola)</option><option value="pt-BR" ${cfg.lang==='pt-BR'?'selected':''}>Português (Brasil)</option><option value="en-US" ${cfg.lang==='en-US'?'selected':''}>English (US)</option><option value="en-GB" ${cfg.lang==='en-GB'?'selected':''}>English (UK)</option></select>
- <label>Voz</label><select id="sVoice"><option value="">Automática (masculina se existir)</option>${vs}</select>
- <label>Tom grave ↔ agudo</label><input type="range" id="sPitch" min=".4" max="1.4" step=".05" value="${cfg.pitch}">
- <label>Velocidade</label><input type="range" id="sRate" min=".7" max="1.4" step=".05" value="${cfg.rate}">
- <div class="row"><span>Pesquisa na internet</span><input type="checkbox" class="sw" id="sSearch" ${cfg.search?'checked':''}></div>
- <div class="row"><span>Falar as respostas</span><input type="checkbox" class="sw" id="sSpeak" ${cfg.speak?'checked':''}></div>
- <div class="row"><span>Escuta permanente</span><input type="checkbox" class="sw" id="sListen" ${cfg.listen?'checked':''}></div>
- <div class="acts"><button class="btn" id="sSave">Guardar</button><button class="btn g" id="sTest">Testar voz</button><button class="btn g" id="sClear">Apagar conversa</button></div>
- <p class="small">A chave nunca vai para o GitHub: só fica neste navegador. Usa uma chave só para esta app, com limite de gasto definido na consola da Anthropic.</p>`);
- const rd=()=>{cfg.key=$('#sKey').value.trim();cfg.model=$('#sModel').value.trim()||'claude-fable-5-1';cfg.user=$('#sUser').value.trim()||'Arão';cfg.wake=$('#sWake').value.trim()||'jarvis';cfg.lang=$('#sLang').value;cfg.voice=$('#sVoice').value;cfg.pitch=+$('#sPitch').value;cfg.rate=+$('#sRate').value;cfg.search=$('#sSearch').checked;cfg.speak=$('#sSpeak').checked;cfg.listen=$('#sListen').checked;searchBroken=false;saveCfg()};
- $('#sSave').onclick=()=>{const old=cfg.lang;rd();closeModal();stopRec();paint();updateListening();toast('Guardado.')};
- $('#sTest').onclick=()=>{rd();stopSpeaking();const s=cfg.speak;cfg.speak=true;sayChunk('Olá '+cfg.user+'. Todos os sistemas estão operacionais.');cfg.speak=s};
- $('#sClear').onclick=()=>{hist=[];saveHist();log.innerHTML='';closeModal();toast('Conversa apagada. A memória mantém-se.')}}
-function openMemory(){const items=mem.facts.map((f,i)=>`<div class="mi"><span>${esc(f.t)}</span><button data-i="${i}" aria-label="Apagar">×</button></div>`).join('')||'<p>Ainda sem memórias. Vou aprendendo contigo.</p>';
- modal(`<h2>MEMÓRIA</h2><p>O que o Jarvis sabe sobre ti (${mem.facts.length}). Ele acrescenta sozinho enquanto conversam.</p><div id="memlist">${items}</div>
- <label>Ensinar algo ao Jarvis</label><input type="text" id="mAdd" placeholder="Ex.: Gosto de respostas curtas"><div class="acts"><button class="btn" id="mAddB">Adicionar</button><button class="btn g" id="mExp">Exportar</button><button class="btn g" id="mImp">Importar</button><button class="btn g" id="mCl">Fechar</button></div><input type="file" id="mFile" accept=".json" hidden>`);
- $('#memlist').onclick=e=>{const i=e.target.dataset&&e.target.dataset.i;if(i!==undefined){mem.facts.splice(+i,1);saveMem();openMemory()}};
- $('#mAddB').onclick=()=>{const v=$('#mAdd').value.trim();if(v){mem.facts.push({t:v,ts:Date.now()});saveMem();openMemory()}};
- $('#mCl').onclick=closeModal;
- $('#mExp').onclick=()=>{const b=new Blob([JSON.stringify({mem,hist},null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='jarvis-memoria.json';a.click()};
- $('#mImp').onclick=()=>$('#mFile').click();
- $('#mFile').onchange=async e=>{try{const j=JSON.parse(await e.target.files[0].text());if(j.mem&&Array.isArray(j.mem.facts)){mem=j.mem;saveMem();if(Array.isArray(j.hist)){hist=j.hist;saveHist()}openMemory();toast('Memória importada.')}}catch(_){toast('Ficheiro inválido.')}}}
-
-/* ---------- ligações da interface ---------- */
-function paint(){$('#dot').classList.toggle('on',recRunning);$('#bMic').classList.toggle('off',!cfg.listen);$('#bMic').classList.toggle('act',cfg.listen);$('#bVoice').classList.toggle('off',!cfg.speak);$('#bVoice').classList.toggle('act',cfg.speak);
- if(!busy&&ttsPending===0)setState(cfg.listen&&SR?'idle':'sleep')}
-$('#f').onsubmit=e=>{e.preventDefault();const t=$('#txt').value.trim();if(!t&&!atts.length)return;$('#txt').value='';if(!started)begin();handle(t||'')};
-$('#bMic').onclick=()=>{cfg.listen=!cfg.listen;saveCfg();if(!SR)toast('Este navegador não suporta escuta. Usa o Chrome no Android.',4000);updateListening();paint();toast(cfg.listen?'Escuta permanente ligada.':'Escuta desligada.')};
-$('#bVoice').onclick=()=>{cfg.speak=!cfg.speak;saveCfg();if(!cfg.speak)stopSpeaking();paint();toast(cfg.speak?'Voz ligada.':'Respostas só em texto.')};
-$('#bStop').onclick=()=>{stopSpeaking();abortCtl&&abortCtl.abort();setState('idle');updateListening()};
-$('#face').onclick=()=>{if(ttsPending>0||busy){$('#bStop').click()}else{awakeUntil=Date.now()+25000;setState('listen');beep(500,1100,.12);toast('Diz o que precisas.')}};
-$('#bImg').onclick=()=>$('#file').click();$('#file').onchange=e=>{addFiles([...e.target.files]);e.target.value=''};
-$('#bCam').onclick=()=>openCam(null);$('#camShot').onclick=shot;$('#camX').onclick=closeCam;$('#camFlip').onclick=async()=>{cam.facing=cam.facing==='environment'?'user':'environment';try{cam.stream&&cam.stream.getTracks().forEach(t=>t.stop());cam.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:cam.facing},audio:false});$('#vid').srcObject=cam.stream}catch(e){toast('Não consegui virar a câmara.')}};
-$('#bSet').onclick=()=>openSettings();$('#bMem').onclick=openMemory;
-addEventListener('paste',e=>{const fs=[...(e.clipboardData&&e.clipboardData.files||[])];if(fs.length)addFiles(fs)});
-document.addEventListener('visibilitychange',()=>{if(document.hidden)stopRec();else{wake();updateListening()}});
-let wl=null;async function wake(){try{if(navigator.wakeLock&&started){wl=await navigator.wakeLock.request('screen')}}catch(e){}}
-
-/* ---------- arranque ---------- */
-async function begin(){if(started)return;started=true;$('#boot').style.display='none';
- try{const s=await navigator.mediaDevices.getUserMedia({audio:true});s.getTracks().forEach(t=>t.stop())}catch(e){if(SR)toast('Sem permissão de microfone: podes escrever ao Jarvis.',4000)}
- wake();beep(400,1300,.22);const h=new Date().getHours(),g=h<5?'Boa noite':h<12?'Bom dia':h<19?'Boa tarde':'Boa noite';
- const greet=`${g}, ${cfg.user}. Jarvis online. Em que posso ajudar?`;
- if(!SR)addMsg('s','Este navegador não suporta escuta por voz. Para falares com o Jarvis usa o Chrome no Android. Podes escrever.');
- try{if(synth){const u=new SpeechSynthesisUtterance(' ');u.volume=0;synth.speak(u)}}catch(e){}
- streamDone=true;addMsg('j',md(greet));sayChunk(greet);updateListening();paint();
- try{if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js')}catch(e){}}
-$('#bGo').onclick=()=>{const k=$('#bKey').value.trim();if(k){cfg.key=k;}cfg.user=$('#bName').value.trim()||'Arão';saveCfg();if(!cfg.key)toast('Podes colocar a chave depois nas definições (engrenagem).',3500);begin()};
-if(cfg.key){$('#bKey').value=cfg.key;$('#bName').value=cfg.user}
-$('#bKey').addEventListener('keydown',e=>{if(e.key==='Enter')$('#bGo').click()});
-hist.slice(-6).forEach(h=>addMsg(h.role==='user'?'u':'j',md(h.text)));
-setState(SR?'idle':'sleep');paint();
-window.__jv={cfg,onHeard,get state(){return state}};
-})();
-</script>
-</body>
-</html>
+  const show=(fin||it).trim();if(

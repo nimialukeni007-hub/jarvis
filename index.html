@@ -100,7 +100,7 @@ label{display:block;font-size:13px;color:var(--mu);margin:12px 0 4px;letter-spac
   <header>
     <i id="dot"></i><h1>J.A.R.V.I.S</h1><span class="sp"></span>
     <button class="ib" id="bMem" title="Memória" aria-label="Memória"><svg viewBox="0 0 24 24"><path d="M9 3a4 4 0 0 0-4 4v1a3 3 0 0 0-1 5 3 3 0 0 0 2 4 3.5 3.5 0 0 0 7 0V6a3 3 0 0 0-4-3z"/><path d="M15 6a3 3 0 0 1 4 2 3 3 0 0 1 1 4 3 3 0 0 1-2 4"/></svg></button>
-    <button class="ib" id="bSet" title="Definições" aria-label="Definições"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    <button class="ib" id="bSet" title="Definições" aria-label="Definições"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l-.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
   </header>
   <section class="stage">
     <div class="rings"><i></i><i></i><i></i></div>
@@ -130,7 +130,7 @@ label{display:block;font-size:13px;color:var(--mu);margin:12px 0 4px;letter-spac
   <div class="logo">JARVIS</div>
   <p style="text-align:center">Assistente pessoal com o cérebro do Gemini. Fica à escuta: diz <b style="color:var(--c)">«Jarvis»</b> e ele responde.</p>
   <label>Chave da API Google Gemini <span style="text-transform:none">(fica só neste telemóvel)</span></label>
-  <input type="password" id="bKey" placeholder="AIzaSy... ou AQ..." autocomplete="off">
+  <input type="password" id="bKey" placeholder="AQ... ou AIzaSy..." autocomplete="off">
   <label>O teu nome</label>
   <input type="text" id="bName" value="Arão">
   <div class="acts" style="margin-top:18px"><button class="btn" id="bGo" style="flex:1">ATIVAR JARVIS</button></div>
@@ -156,7 +156,7 @@ function toast(t,ms=2600){const e=$('#toast');e.textContent=t;e.classList.add('s
 const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 function md(s){let out='';for(const p of s.split(/(```[\s\S]*?(?:```|$))/g)){if(p.startsWith('```')){const b=p.replace(/^```[^\n]*\n?/,'').replace(/```$/,'');out+='<pre><code>'+esc(b)+'</code><button class="cp" type="button">copiar</button></pre>'}else out+=esc(p).replace(/`([^`\n]+)`/g,'<code>$1</code>').replace(/\*\*([^*\n]+)\*\*/g,'<b>$1</b>').replace(/(https?:\/\/[^\s<)]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>').replace(/\n/g,'<br>')}return out}
 function speechText(s){return s.replace(/```[\s\S]*?```/g,' ').replace(/```[\s\S]*$/,' ').replace(/\[([^\]]*)\]\([^)]*\)/g,'$1').replace(/https?:\/\/\S+/g,'').replace(/[*_`#>~|]/g,'').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,'')}
-function cleanTags(raw){return raw.replace(/<memoria>[\s\S]*?<\/memoria>/g, '').replace(/<esquecer>[\s\S]*?<\/esquecer>/g, '')}
+function cleanTags(raw){return raw.replace(/<memoria>[\s\S]*?<\/memoria>/g,'').replace(/<esquecer>[\s\S]*?<\/esquecer>/g,'')}
 const log=$('#log');
 function addMsg(cls,html,imgs){const d=document.createElement('div');d.className='m '+cls;if(imgs)imgs.forEach(u=>{const i=document.createElement('img');i.src=u;d.appendChild(i)});const b=document.createElement('div');b.innerHTML=html;d.appendChild(b);d._b=b;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
 log.addEventListener('click',e=>{if(e.target.classList.contains('cp')){const t=e.target.previousElementSibling.textContent;try{navigator.clipboard.writeText(t);e.target.textContent='copiado'}catch(_){}}});
@@ -259,7 +259,7 @@ return `És o JARVIS, o assistente pessoal de IA de ${cfg.user}, inspirado no J.
 
 Estás dentro de uma app no telemóvel dele. Ele fala-te por voz (dizendo "Jarvis") ou escreve, e TUDO o que respondes é lido em voz alta. Por isso: frases curtas e naturais, como numa conversa; normalmente 1 a 4 frases; sem listas, sem markdown e sem emojis, a não ser que ele peça texto ou código. Código vai sempre em blocos \`\`\` (esses blocos não são lidos em voz alta; diz só em palavras o que o código faz). Dá respostas longas apenas se ele pedir.
 
-Capacidades: vês as imagens, PDFs e ficheiros que ele envia e o que a câmara apanha. És especialista em programação e dás código completo e funcional.
+Capacidades: vês as imagens e ficheiros que ele envia e o que a câmara apanha. És especialista em programação e dás código completo e funcional.
 
 Memória a longo prazo sobre ${cfg.user}:
 ${facts}
@@ -319,15 +319,15 @@ function openSettings(msg){loadVoices();const vs=voices.filter(v=>/pt|en/i.test(
  <label>Modelo</label><input type="text" id="sModel" value="${esc(cfg.model)}">
  <label>O teu nome</label><input type="text" id="sUser" value="${esc(cfg.user)}">
  <div class="acts"><button class="btn" id="sSave">Guardar</button></div>`);
- $('#sSave').onclick=()=>{cfg.key=$('#sKey').value.trim();cfg.model=$('#sModel').value.trim()\vert{}\vert{}'gemini-1.5-flash';cfg.user=$('#sUser').value.trim()||'Arão';saveCfg();closeModal();toast('Guardado.')}}
+ $('#sSave').onclick=()=>{cfg.key=$('#sKey'].value.trim();cfg.model=$('#sModel'].value.trim()\vert{}\vert{}'gemini-1.5-flash';cfg.user=$('#sUser'].value.trim()||'Arão';saveCfg();closeModal();toast('Guardado.')}}
 
 function paint(){$('#dot').classList.toggle('on',recRunning);$('#bMic').classList.toggle('off',!cfg.listen);$('#bMic').classList.toggle('act',cfg.listen);$('#bVoice').classList.toggle('off',!cfg.speak);$('#bVoice').classList.toggle('act',cfg.speak)}
-$('#f').onsubmit=e=>{e.preventDefault();const t=$('#txt').value.trim();if(!t&&!atts.length)return;$('#txt').value='';if(!started)begin();handle(t||'')};
+$('#f').onsubmit=e=>{e.preventDefault();const t=$('#txt'].value.trim();if(!t&&!atts.length)return;$('#txt'].value='';if(!started)begin();handle(t||'')};
 $('#bMic').onclick=()=>{cfg.listen=!cfg.listen;saveCfg();updateListening();paint()};
 $('#bVoice').onclick=()=>{cfg.speak=!cfg.speak;saveCfg();if(!cfg.speak)stopSpeaking();paint()};
 $('#bStop').onclick=()=>{stopSpeaking();abortCtl&&abortCtl.abort();setState('idle');updateListening()};
 $('#face').onclick=()=>{awakeUntil=Date.now()+25000;setState('listen');beep(500,1100,.12)};
-$('#bImg').onclick=()=>$('#file').click();$('#file').onchange=e=>{addFiles([...e.target.files]);e.target.value=''};
+$('#bImg').onclick=()=>$('#file'].click();$('#file').onchange=e=>{addFiles([...e.target.files]);e.target.value=''};
 $('#bCam').onclick=()=>openCam(null);$('#camShot').onclick=shot;$('#camX').onclick=closeCam;$('#camFlip').onclick=async()=>{cam.facing=cam.facing==='environment'?'user':'environment';try{cam.stream&&cam.stream.getTracks().forEach(t=>t.stop());cam.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:cam.facing},audio:false});$('#vid').srcObject=cam.stream}catch(e){}};
 $('#bSet').onclick=()=>openSettings();
 
@@ -335,7 +335,7 @@ async function begin(){if(started)return;started=true;$('#boot').style.display='
  try{const s=await navigator.mediaDevices.getUserMedia({audio:true});s.getTracks().forEach(t=>t.stop())}catch(e){}
  const greet=`Boa noite, ${cfg.user}. Jarvis online. Em que posso ajudar?`;
  streamDone=true;addMsg('j',md(greet));sayChunk(greet);updateListening();paint()}
-$('#bGo').onclick=()=>{const k=$('#bKey').value.trim();if(k){cfg.key=k;}cfg.user=$('#sUser']?$('#sUser').value.trim():'Arão';saveCfg();if(!cfg.key){toast('Insere a chave da API.');return;}begin()};
+$('#bGo').onclick=()=>{const k=$('#bKey'].value.trim();if(k){cfg.key=k;}cfg.user=$('#bName').value.trim()||'Arão';saveCfg();if(!cfg.key){toast('Insere a chave da API.');return;}begin()};
 if(cfg.key){$('#bKey').value=cfg.key;$('#bName').value=cfg.user}
 setState(SR?'idle':'sleep');paint();
 })();
